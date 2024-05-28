@@ -1,0 +1,81 @@
+service: yandeh-orders-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    DYNAMODB_TABLE: OrdersTable
+    ORDER_QUEUE_URL: http://localhost:9324/queue/OrderQueue
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3005
+
+resources:
+  Resources:
+    OrdersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: orderId
+            AttributeType: S
+          - AttributeName: clientId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderId
+            KeyType: HASH
+          - AttributeName: clientId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    OrderQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: OrderQueue
+
+functions:
+  createOrder:
+    handler: src/handlers/create-order.handler
+    events:
+      - http:
+          path: orders
+          method: post
+
+  importOrders:
+    handler: src/handlers/import-orders.handler
+    events:
+      - http:
+          path: orders/import
+          method: post
+
+  updateOrderStatus:
+    handler: src/handlers/update-order-status.handler
+    events:
+      - http:
+          path: orders/{id}/status
+          method: patch
+
+  getOrder:
+    handler: src/handlers/get-order.handler
+    events:
+      - http:
+          path: orders
+          method: get
+
+  processOrderQueue:
+    handler: src/handlers/process-order-queue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - OrderQueue
+              - Arn
+          batchSize: 5

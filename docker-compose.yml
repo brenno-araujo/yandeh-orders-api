@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  dynamodb:
+    build: ./dynamodb
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+
+  elasticmq:
+    build: ./elasticmq
+    ports:
+      - "9324:9324"
+      - "9325:9325"
+    environment:
+      - ELASTICMQ_OPTS=-Dconfig.file=/opt/elasticmq.conf
+    volumes:
+      - ./elasticmq/elasticmq.conf:/opt/elasticmq.conf

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Use uma versão mais recente do ECMAScript se a compatibilidade permitir
+    "module": "CommonJS", // Mantenha "CommonJS" se for necessário para o seu ambiente
+    "outDir": "./dist",
+    "rootDir": "",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true, // Opcional, desabilita a verificação de bibliotecas
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false, // Desativar geração de declarações em produção
+    "sourceMap": false, // Desativar mapas de origem em produção
+    "removeComments": true, // Remover comentários em produção
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": false, // Se possível, mantenha desativado
+    "noImplicitThis": false, // Se possível, mantenha desativado
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "baseUrl": "./", // Use "./" para o diretório raiz
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "typeRoots": ["./node_modules/@types"],
+    "lib": ["ESNext"] // Use "ESNext" para suportar recursos mais recentes
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+}
