@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
 import AWS from 'aws-sdk';
 import { OrderRepository } from '../repositories/order/order.repository';
 import { DatabaseService } from '../database/database';
+import DateHelper from '../helpers/data-helper';
 
 interface Order {
   orderId: string;
@@ -32,21 +32,6 @@ export class OrderService {
     this.databaseService = new DatabaseService();
   }
 
-  private calculateDeliveryDate(orderDate: Date): Date {
-    const day = orderDate.getDay();
-    const hour = orderDate.getHours();
-
-    if (day >= 1 && day <= 3) {
-      orderDate.setDate(orderDate.getDate() + 3);
-    } else if (day === 4 && hour <= 13) {
-      orderDate.setDate(orderDate.getDate() + 4);
-    } else {
-      orderDate.setDate(orderDate.getDate() + 5);
-    }
-
-    return orderDate;
-  }
-
   async queueOrder(data: any): Promise<any> {
     try {
       console.log('service', data);
@@ -70,7 +55,7 @@ export class OrderService {
       await this.databaseService.init();
 
       const orderDate = new Date();
-      const deliveryDate = this.calculateDeliveryDate(orderDate);
+      const deliveryDate = DateHelper.calculateDeliveryDate(orderDate);
 
       const order = {
         clientId: data.idCliente,

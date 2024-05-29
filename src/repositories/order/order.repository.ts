@@ -24,6 +24,26 @@ export class OrderRepository {
     }
   }
 
+  async createUsingCsv(data: any): Promise< { success: boolean, data: any }> {
+    try {
+      const created = await this.order.create(data);
+      return {
+        success: true,
+        data: {
+          ...created.toJSON(),
+        }
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        data: {
+          ...data,
+          error: error.message,
+        }
+      };
+    }
+  }
+
   async updateStatus(id: string, status: string): Promise<Order> {
     try {
       const order = await this.order.findByPk(id);
