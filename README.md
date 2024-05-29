@@ -18,6 +18,11 @@ docker compose up
 http://localhost:8080
 ```
 
+### Caso queira acessar a interface da fila SQS, utilize o seguinte endereço:
+```bash
+http://localhost:9325/
+```
+
 ### Tecnologias utilizadas
 - Node.js
 - TypeScript
@@ -31,6 +36,7 @@ http://localhost:8080
 
 ### Observações
 - O projeto foi desenvolvido utilizando o conceito de Serverless, com a utilização de AWS Lambda e API Gateway.
+- Para o cadastro de uma nova venda, é enviado um pedido para a fila SQS. Caso ocorra algum erro, há mais 4 tentativas de reenvio. Caso o erro persista, o pedido é enviado para a fila Dead Letter Queue.
 - Comecei a implementação utlizando DynamoDB, mas devido a problemas de execução com o Docker, optei por utilizar o MySQL (simulando ser um banco não relacional).
 - No diretório principal do projeto, há um arquivo chamado `csv-teste.csv` que contém dados para teste na rota que permite a importação de pedidos.
 - Optei por não utlizar testes, pois utilizei o tempo para criar o ambiente de desenvolvimento e a implementação do projeto. Porém, acredito que a cobertura de testes é essencial para garantir a qualidade do código.
