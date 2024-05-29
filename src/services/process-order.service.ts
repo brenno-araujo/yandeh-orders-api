@@ -1,29 +1,8 @@
-import AWS from 'aws-sdk';
 import { OrderRepository } from '../repositories/order/order.repository';
 import { DatabaseService } from '../database/database';
 import DateHelper from '../helpers/data-helper';
 
-interface Order {
-  orderId: string;
-  clientId: string;
-  items: {};
-  totalAmount: number;
-  deliveryDate: Date;
-  status: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
-}
-
-const optionsSqs = process.env.IS_DOCKER
-  ? { region: 'us-east', endpoint: 'http://elasticmq:9324' }
-  : { region: 'us-east', endpoint: 'http://localhost:9324' };
-
-console.log('optionsSqs', optionsSqs);
-
-const sqs = new AWS.SQS(optionsSqs);
-
-export class OrderService {
+export class ProcessOrderService {
   private orderRepository: OrderRepository;
   private readonly databaseService: DatabaseService;
 
@@ -32,7 +11,7 @@ export class OrderService {
     this.databaseService = new DatabaseService();
   }
 
-  async createOrder(data: any): Promise<any> {
+  async execute(data: any): Promise<any> {
     try {
       console.log('service', data);
       await this.databaseService.init();
@@ -60,20 +39,5 @@ export class OrderService {
     } finally {
       await this.databaseService.close();
     }
-  }
-
-  async importOrders(orders: any[]): Promise<any[]> {
-    const results: { error: any }[] = [];
-
-    for (const data of orders) {
-      try {
-        const result = await this.createOrder(data);
-        results.push(result);
-      } catch (error: any) {
-        results.push({ error: error.message });
-      }
-    }
-
-    return results;
   }
 }
