@@ -43,3 +43,18 @@ services:
       - AWS_REGION=us-east-1
       - SQS_ENDPOINT=elasticmq
       - IS_DOCKER=true
+      - DB_NAME=orders_tb
+      - DB_USER=brenno_araujo_user
+      - DB_PASS=brenno_araujo_password
+      - DB_HOST=mysql
+      - DB_PORT=3306
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8080:8080"
+    environment:
+      SWAGGER_JSON: /swagger/swagger.yaml
+    volumes:
+      - ./swagger:/swagger

@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: Orders API
+  description: API para gerenciar pedidos.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3005/dev
+
+paths:
+  /orders:
+    post:
+      summary: Criar pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idCliente:
+                  type: string
+                itens:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      codigo:
+                        type: string
+                      quantidade:
+                        type: integer
+                      valorUnitario:
+                        type: number
+                        format: float
+              required:
+                - idCliente
+                - itens
+      responses:
+        '200':
+          description: Pedido criado com sucesso
+        '400':
+          description: Requisição inválida
+
+    get:
+      summary: Buscar pedido via cliente ou ID do pedido
+      parameters:
+        - in: query
+          name: clientId
+          schema:
+            type: string
+          description: ID do cliente
+        - in: query
+          name: orderId
+          schema:
+            type: string
+          description: ID do pedido
+      responses:
+        '200':
+          description: Dados do pedido retornados com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                  idCliente:
+                    type: string
+                  itens:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        codigo:
+                          type: string
+                        quantidade:
+                          type: integer
+                        valorUnitario:
+                          type: number
+                          format: float
+                  status:
+                    type: string
+        '404':
+          description: Pedido não encontrado
+
+  /orders/{orderId}/status:
+    patch:
+      summary: Atualizar status do pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+          description: ID do pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: ['Pendente', 'Faturado', 'Cancelado', 'Entregue']
+              required:
+                - status
+      responses:
+        '200':
+          description: Status do pedido atualizado com sucesso
+        '400':
+          description: Requisição inválida
+        '404':
+          description: Pedido não encontrado
+
+  /orders/import:
+    post:
+      summary: Importar dados do CSV - Recomendo utilizar o csv-test.csv que está na raiz do projeto.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Dados importados com sucesso
+        '400':
+          description: Requisição inválida
