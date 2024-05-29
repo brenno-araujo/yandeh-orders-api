@@ -76,49 +76,4 @@ export class OrderService {
 
     return results;
   }
-
-  async updateOrderStatus(orderId: string, status: string): Promise<Order> {
-    try {
-      this.databaseService.init();
-      const validStatuses = ['Pendente', 'Faturado', 'Cancelado', 'Entregue'];
-      if (!validStatuses.includes(status)) {
-        throw new Error('Invalid status');
-      }
-      const order = await this.orderRepository.updateStatus(orderId, status);
-      return order;
-    } catch (error) {
-      console.error('Failed to update order status:', error);
-      throw new Error('Failed to update order status');
-    } finally {
-      this.databaseService.close();
-    }
-
-  }
-
-  async getOrder(queryParams: any): Promise<Order | Order[]> {
-    try {
-      await this.databaseService.init();
-      if (queryParams.orderId) {
-        const order = await this.orderRepository.findById(queryParams.orderId);
-        if (!order) {
-          throw new Error('Order not found');
-        }
-        return order;
-      }
-    
-      if (queryParams.clientId) {
-        const orders = await this.orderRepository.getOrdersByClientId(queryParams.clientId);
-        if (!orders.length) {
-          throw new Error('No orders found for this client');
-        }
-        return orders;
-      }
-    } catch (error) {
-      console.error('Failed to get order:', error);
-      throw new Error('Failed to get order');
-    } finally {
-      await this.databaseService.close();
-    }
-    throw new Error('Invalid query parameters');
-  }
 }

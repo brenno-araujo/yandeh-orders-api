@@ -81,7 +81,7 @@ functions:
           method: patch
 
   getOrder:
-    handler: src/handlers/get-order.handler
+    handler: src/handlers/find-order.handler
     timeout: 30
     # environment:
     #   NODE_ENV: ${env:NODE_ENV}
