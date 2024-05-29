@@ -43,4 +43,3 @@ http://localhost:8080
 
 ### Agradecimentos
 Agradeço a oportunidade de participar do processo seletivo da Yandeh. Foi um desafio muito interessante e que me fez pensar em diversas soluções para os problemas propostos.
-```
