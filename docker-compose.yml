@@ -1,10 +1,19 @@
 version: '3.8'
 
 services:
-  dynamodb:
-    build: ./dynamodb
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: orders_tb
+      MYSQL_ROOT_PASSWORD: brenno_araujo_root
+      MYSQL_USER: brenno_araujo_user
+      MYSQL_PASSWORD: brenno_araujo_password
     ports:
-      - "8000:8000"
+      - "3307:3306"
+    volumes:
+      - ./database:/var/lib/mysql
+    restart: always
 
   elasticmq:
     build: ./elasticmq
@@ -21,8 +30,8 @@ services:
       context: .
       dockerfile: nodejs/Dockerfile
     depends_on:
-      - dynamodb
       - elasticmq
+      - mysql
     volumes:
       - /usr/src/app/node_modules
     ports:
@@ -32,6 +41,5 @@ services:
       - AWS_ACCESS_KEY_ID=accesskey
       - AWS_SECRET_ACCESS_KEY=secretkey
       - AWS_REGION=us-east-1
-      - DYNAMODB_ENDPOINT=http://dynamodb:8000
       - SQS_ENDPOINT=elasticmq
       - IS_DOCKER=true

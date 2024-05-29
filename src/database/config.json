@@ -1,0 +1,10 @@
+{
+  "development": {
+    "username": "brenno_araujo_user",
+    "password": "brenno_araujo_password",
+    "database": "orders_tb",
+    "host": "mysql",
+    "port": "3306",
+    "dialect": "mysql"
+  }
+}

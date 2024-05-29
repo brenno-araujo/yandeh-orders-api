@@ -20,7 +20,7 @@ custom:
     host: '0.0.0.0'
   serverless-offline-sqs:
     autoCreate: true
-    endpoint: http://localhost:9324
+    endpoint: http://elasticmq:9324
     region: us-east-1
     queues:
       - name: OrderQueue
@@ -31,24 +31,6 @@ custom:
 
 resources:
   Resources:
-    OrdersTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
-        AttributeDefinitions:
-          - AttributeName: orderId
-            AttributeType: S
-          - AttributeName: clientId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: orderId
-            KeyType: HASH
-          - AttributeName: clientId
-            KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-
     OrderQueue:
       Type: AWS::SQS::Queue
       Properties:
@@ -58,13 +40,12 @@ functions:
   createOrder:
     handler: src/handlers/create-order.handler
     timeout: 30
-    # environment:
-    #   NODE_ENV: ${env:NODE_ENV}
-    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    #   AWS_REGION: ${env:AWS_REGION}
-    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
-    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    environment:
+      NODE_ENV: ${env:NODE_ENV}
+      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${env:AWS_REGION}
+      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders
@@ -73,13 +54,12 @@ functions:
   importOrders:
     handler: src/handlers/import-orders.handler
     timeout: 30
-    # environment:
-    #   NODE_ENV: ${env:NODE_ENV}
-    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    #   AWS_REGION: ${env:AWS_REGION}
-    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
-    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    environment:
+      NODE_ENV: ${env:NODE_ENV}
+      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${env:AWS_REGION}
+      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders/import
@@ -88,13 +68,12 @@ functions:
   updateOrderStatus:
     handler: src/handlers/update-order-status.handler
     timeout: 30
-    # environment:
-    #   NODE_ENV: ${env:NODE_ENV}
-    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    #   AWS_REGION: ${env:AWS_REGION}
-    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
-    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    environment:
+      NODE_ENV: ${env:NODE_ENV}
+      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${env:AWS_REGION}
+      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders/{id}/status
@@ -103,13 +82,12 @@ functions:
   getOrder:
     handler: src/handlers/get-order.handler
     timeout: 30
-    # environment:
-    #   NODE_ENV: ${env:NODE_ENV}
-    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    #   AWS_REGION: ${env:AWS_REGION}
-    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
-    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    environment:
+      NODE_ENV: ${env:NODE_ENV}
+      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${env:AWS_REGION}
+      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders
@@ -118,13 +96,12 @@ functions:
   processOrderQueue:
     handler: src/handlers/process-order-queue.handler
     timeout: 30
-    # environment:
-    #   NODE_ENV: ${env:NODE_ENV}
-    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    #   AWS_REGION: ${env:AWS_REGION}
-    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
-    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    environment:
+      NODE_ENV: ${env:NODE_ENV}
+      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${env:AWS_REGION}
+      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - sqs:
           arn:

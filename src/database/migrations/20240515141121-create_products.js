@@ -15,7 +15,7 @@ module.exports = {
       },
       items: {
         allowNull: false,
-        type: Sequelize.JSONB,
+        type: Sequelize.JSON,
       },
       totalAmount: {
         allowNull: false,
