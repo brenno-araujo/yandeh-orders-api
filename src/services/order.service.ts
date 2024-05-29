@@ -3,19 +3,19 @@ import AWS from 'aws-sdk';
 import { OrderRepository } from '../repository/order.repository';
 import { Order } from '../models/order.model';
 
-const options = process.env.IS_OFFLINE
-  ? { region: 'us-west-2', endpoint: 'http://localhost:9324' }
-  : {};
+const optionsSqs = process.env.IS_DOCKER
+  ? { region: 'us-west-2', endpoint: process.env.DYNAMODB_ENDPOINT }
+  : { region: 'us-west-2', endpoint: 'http://localhost:9324' };
 
-const sqs = new AWS.SQS(options);
+console.log('optionsSqs', optionsSqs);
+
+const sqs = new AWS.SQS(optionsSqs);
 
 export class OrderService {
   private orderRepository: OrderRepository;
-  private orderQueueUrl: string;
 
   constructor() {
     this.orderRepository = new OrderRepository();
-    this.orderQueueUrl = process.env.ORDER_QUEUE_URL || '';
   }
 
   private calculateDeliveryDate(orderDate: Date): Date {
@@ -37,7 +37,7 @@ export class OrderService {
     try {
       console.log('service', data);
       const params = {
-        QueueUrl: this.orderQueueUrl,
+        QueueUrl: 'http://localhost:9324/queue/OrderQueue',
         MessageBody: JSON.stringify(data),
       };
       await sqs.sendMessage(params).promise();
@@ -49,26 +49,31 @@ export class OrderService {
   }
 
   async createOrder(data: any): Promise<any> {
-    console.log('service', data);
-    const orderId = uuidv4();
-    const orderDate = new Date();
-    const deliveryDate = this.calculateDeliveryDate(orderDate);
+    try {
+      console.log('service', data);
+      const orderId = uuidv4();
+      const orderDate = new Date();
+      const deliveryDate = this.calculateDeliveryDate(orderDate);
 
-    const order = new Order(
-      orderId,
-      data.idCliente,
-      data.itens,
-      data.itens.reduce((total: number, item: { valorUnitario: number, quantidade: number }) => total + item.valorUnitario * item.quantidade, 0),
-      deliveryDate.toISOString(),
-      'Pendente'
-    );
+      const order = new Order(
+        orderId,
+        data.idCliente,
+        data.itens,
+        data.itens.reduce((total: number, item: { valorUnitario: number, quantidade: number }) => total + item.valorUnitario * item.quantidade, 0),
+        deliveryDate.toISOString(),
+        'Pendente'
+      );
 
-    await this.orderRepository.saveOrder(order);
-    return {
-      numeroPedido: order.orderId,
-      valorTotal: order.totalAmount,
-      dataEntrega: order.deliveryDate,
-    };
+      await this.orderRepository.saveOrder(order);
+      return {
+        numeroPedido: order.orderId,
+        valorTotal: order.totalAmount,
+        dataEntrega: order.deliveryDate,
+      };
+    } catch (error) {
+      console.error('Failed to create order:', error);
+      throw new Error('Failed to create order');
+    }
   }
 
   async importOrders(orders: any[]): Promise<any[]> {

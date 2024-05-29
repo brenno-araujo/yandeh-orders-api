@@ -3,18 +3,31 @@ service: yandeh-orders-api
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-east-1
+  region: sa-east-1
   environment:
     DYNAMODB_TABLE: OrdersTable
-    ORDER_QUEUE_URL: http://localhost:9324/queue/OrderQueue
+    # ORDER_QUEUE_URL: http://localhost:9324/queue/OrderQueue
+    ORDER_QUEUE_URL: 'elasticmq-1:9324/queue/OrderQueue'
 
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-offline-sqs
 
 custom:
   serverless-offline:
     httpPort: 3005
+    host: '0.0.0.0'
+  serverless-offline-sqs:
+    autoCreate: true
+    endpoint: http://localhost:9324
+    region: us-east-1
+    queues:
+      - name: OrderQueue
+        arn:
+          Fn::GetAtt:
+            - OrderQueue
+            - Arn
 
 resources:
   Resources:
@@ -44,6 +57,14 @@ resources:
 functions:
   createOrder:
     handler: src/handlers/create-order.handler
+    timeout: 30
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders
@@ -51,6 +72,14 @@ functions:
 
   importOrders:
     handler: src/handlers/import-orders.handler
+    timeout: 30
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders/import
@@ -58,6 +87,14 @@ functions:
 
   updateOrderStatus:
     handler: src/handlers/update-order-status.handler
+    timeout: 30
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders/{id}/status
@@ -65,6 +102,14 @@ functions:
 
   getOrder:
     handler: src/handlers/get-order.handler
+    timeout: 30
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders
@@ -72,6 +117,14 @@ functions:
 
   processOrderQueue:
     handler: src/handlers/process-order-queue.handler
+    timeout: 30
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - sqs:
           arn:
@@ -79,3 +132,5 @@ functions:
               - OrderQueue
               - Arn
           batchSize: 5
+
+

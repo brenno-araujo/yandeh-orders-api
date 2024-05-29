@@ -4,11 +4,11 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { Order } from '../models/order.model';
 
 const options = process.env.IS_OFFLINE
-  ? { region: 'us-west-2', endpoint: 'http://localhost:8000' }
+  ? { region: 'sa-east-1', endpoint: 'http://localhost:8000' }
   : {};
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient(options);
-const TABLE_NAME = process.env.DYNAMODB_TABLE || '';
+const TABLE_NAME = process.env.DYNAMODB_TABLE || 'Orders'
 
 export class OrderRepository {
   async saveOrder(order: Order): Promise<void> {
