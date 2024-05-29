@@ -15,6 +15,7 @@ export const handler: SQSHandler = async (event: SQSEvent) => {
     } catch (error) {
       console.error('Erro ao processar a mensagem:', error);
       // Re-throw the error to ensure the message is returned to the queue
+      // dlq 5 times
       throw error;
     }
   }
