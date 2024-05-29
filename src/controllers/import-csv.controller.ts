@@ -1,4 +1,4 @@
-import importService from '../services/import-service';
+import importService from '../services/import-csv.service';
 
 export default class ImportController {
     async execute(event: any) {

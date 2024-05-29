@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import ImportController  from '../controllers/import.controller';
+import ImportController  from '../controllers/import-csv.controller';
 import { formatJSONResponse } from '../helpers/format-json-response';
 import dotenv from 'dotenv';
 
