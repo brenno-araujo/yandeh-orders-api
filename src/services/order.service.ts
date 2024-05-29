@@ -16,7 +16,7 @@ interface Order {
 }
 
 const optionsSqs = process.env.IS_DOCKER
-  ? { region: 'us-east', endpoint: process.env.DYNAMODB_ENDPOINT }
+  ? { region: 'us-east', endpoint: 'http://elasticmq:9324' }
   : { region: 'us-east', endpoint: 'http://localhost:9324' };
 
 console.log('optionsSqs', optionsSqs);
@@ -49,10 +49,9 @@ export class OrderService {
 
   async queueOrder(data: any): Promise<any> {
     try {
-      this.databaseService.init();
       console.log('service', data);
       const params = {
-        QueueUrl: 'http://localhost:9324/queue/OrderQueue',
+        QueueUrl: process.env.IS_DOCKER ? 'http://elasticmq:9324/queue/OrderQueue' : 'http://localhost:9324/queue/OrderQueue',
         MessageBody: JSON.stringify(data),
       };
       await sqs.sendMessage(params).promise();
@@ -61,30 +60,29 @@ export class OrderService {
       console.error('Failed to queue order:', error);
       throw new Error('Failed to queue order');
     } finally {
-      this.databaseService.close();
+      console.log('finally');
     }
   }
 
   async createOrder(data: any): Promise<any> {
     try {
-      this.databaseService.init();
       console.log('service', data);
-      const orderId = uuidv4();
+      await this.databaseService.init();
+
       const orderDate = new Date();
       const deliveryDate = this.calculateDeliveryDate(orderDate);
 
       const order = {
-        orderId,
-        clientId: data.clientId,
-        items: data.items,
-        totalAmount: data.items.reduce((total: number, item: any) => total + item.price * item.quantity, 0),
+        clientId: data.idCliente,
+        items: data.itens,
+        totalAmount: data.itens.reduce((total: number, item: any) => total + item.valorUnitario * item.quantidade, 0),
         deliveryDate,
         status: 'Pendente',
       };
 
-      await this.orderRepository.create(order);
+      const created = await this.orderRepository.create(order);
       return {
-        numeroPedido: order.orderId,
+        numeroPedido: created.orderId,
         valorTotal: order.totalAmount,
         dataEntrega: order.deliveryDate,
       };
@@ -92,7 +90,7 @@ export class OrderService {
       console.error('Failed to create order:', error);
       throw new Error('Failed to create order');
     } finally {
-      this.databaseService.close();
+      await this.databaseService.close();
     }
   }
 

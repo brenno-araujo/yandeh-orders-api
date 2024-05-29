@@ -20,7 +20,7 @@ export class OrderController {
       // mandar para a fila
       await this.orderService.queueOrder(data);
       console.log('Order queued successfully');
-      return { statusCode: 201, body: { message: 'Order queued successfully' } };
+      return { statusCode: 200, body: { message: 'Order queued successfully' } };
     } catch (error) {
       return { statusCode: 500, body: { error: 'Internal Server Error' } };
     }
@@ -55,10 +55,12 @@ export class OrderController {
   }
 
   async processOrder(data: any) {
+    console.log('controller - processa fila', data);
     try {
       await this.orderService.createOrder(data);
     } catch (error) {
       console.error('Failed to process order:', error);
+      throw error;
     }
   }
 }

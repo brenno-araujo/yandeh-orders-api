@@ -3,6 +3,9 @@ node_modules
 jspm_packages
 .build
 data
+database
+.data
+newData
 
 # compiled output
 /dist

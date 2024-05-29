@@ -16,11 +16,12 @@ plugins:
 
 custom:
   serverless-offline:
-    httpPort: 3005
+    httpPort: 3006
     host: '0.0.0.0'
   serverless-offline-sqs:
     autoCreate: true
-    endpoint: http://elasticmq:9324
+    # endpoint: http://elasticmq:9324
+    endpoint: 'http://localhost:9324'
     region: us-east-1
     queues:
       - name: OrderQueue
@@ -40,12 +41,12 @@ functions:
   createOrder:
     handler: src/handlers/create-order.handler
     timeout: 30
-    environment:
-      NODE_ENV: ${env:NODE_ENV}
-      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${env:AWS_REGION}
-      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders
@@ -54,12 +55,12 @@ functions:
   importOrders:
     handler: src/handlers/import-orders.handler
     timeout: 30
-    environment:
-      NODE_ENV: ${env:NODE_ENV}
-      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${env:AWS_REGION}
-      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders/import
@@ -68,12 +69,12 @@ functions:
   updateOrderStatus:
     handler: src/handlers/update-order-status.handler
     timeout: 30
-    environment:
-      NODE_ENV: ${env:NODE_ENV}
-      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${env:AWS_REGION}
-      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders/{id}/status
@@ -82,12 +83,12 @@ functions:
   getOrder:
     handler: src/handlers/get-order.handler
     timeout: 30
-    environment:
-      NODE_ENV: ${env:NODE_ENV}
-      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${env:AWS_REGION}
-      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - http:
           path: orders
@@ -96,12 +97,12 @@ functions:
   processOrderQueue:
     handler: src/handlers/process-order-queue.handler
     timeout: 30
-    environment:
-      NODE_ENV: ${env:NODE_ENV}
-      AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${env:AWS_REGION}
-      SQS_ENDPOINT: ${env:SQS_ENDPOINT}
+    # environment:
+    #   NODE_ENV: ${env:NODE_ENV}
+    #   AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    #   AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    #   AWS_REGION: ${env:AWS_REGION}
+    #   SQS_ENDPOINT: ${env:SQS_ENDPOINT}
     events:
       - sqs:
           arn:

@@ -12,7 +12,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./database:/var/lib/mysql
+      - ./newdata:/var/lib/mysql
     restart: always
 
   elasticmq:
