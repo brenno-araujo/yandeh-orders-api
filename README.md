@@ -20,9 +20,12 @@ curl -X POST http://localhost:3000/orders \
   }'
 
 
-curl -X GET "http://localhost:3000/orders?idCliente=12345"
+curl -X GET http://localhost:3000/orders?clientId=12345 \
+  -H "Content-Type: application/json"
 
-curl -X PATCH http://localhost:3000/orders/{orderId}/status \
+  http://localhost:3000/orders?orderId=564933c5-e832-47e8-b0c7-fdacee4eaa95
+
+curl -X PATCH http://localhost:3000/orders/{564933c5-e832-47e8-b0c7-fdacee4eaa95}/status \
   -H "Content-Type: application/json" \
   -d '{
     "status": "Faturado"

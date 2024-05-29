@@ -47,10 +47,9 @@ export class OrderController {
 
   async getOrder(queryParams: any) {
     try {
-      const result = await this.orderService.getOrder(queryParams);
-      return { statusCode: 200, body: result };
+      return await this.orderService.getOrder(queryParams);
     } catch (error) {
-      return { statusCode: 500, body: { error: 'Internal Server Error' } };
+      throw error;
     }
   }
 

@@ -109,14 +109,15 @@ export class OrderService {
     return results;
   }
 
-  async updateOrderStatus(orderId: string, status: string): Promise<void> {
+  async updateOrderStatus(orderId: string, status: string): Promise<Order> {
     try {
       this.databaseService.init();
       const validStatuses = ['Pendente', 'Faturado', 'Cancelado', 'Entregue'];
       if (!validStatuses.includes(status)) {
         throw new Error('Invalid status');
       }
-    await this.orderRepository.updateStatus(orderId, status);
+      const order = await this.orderRepository.updateStatus(orderId, status);
+      return order;
     } catch (error) {
       console.error('Failed to update order status:', error);
       throw new Error('Failed to update order status');
@@ -128,7 +129,7 @@ export class OrderService {
 
   async getOrder(queryParams: any): Promise<Order | Order[]> {
     try {
-      this.databaseService.init();
+      await this.databaseService.init();
       if (queryParams.orderId) {
         const order = await this.orderRepository.findById(queryParams.orderId);
         if (!order) {
@@ -148,7 +149,7 @@ export class OrderService {
       console.error('Failed to get order:', error);
       throw new Error('Failed to get order');
     } finally {
-      this.databaseService.close();
+      await this.databaseService.close();
     }
     throw new Error('Invalid query parameters');
   }

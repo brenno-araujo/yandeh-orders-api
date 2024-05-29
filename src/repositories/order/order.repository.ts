@@ -29,7 +29,8 @@ export class OrderRepository {
       const order = await this.order.findByPk(id);
       if (order) {
         order.status = status;
-        return await order.save();
+        await order.save();
+        return order;
       } else {
         throw new Error('Pedido não encontrado');
       }
