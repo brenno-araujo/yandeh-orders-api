@@ -5,39 +5,42 @@
 
 Este é um projeto desenvolvido como parte do processo seletivo da Yandeh. 
 
-### npm install -g concurrently
+### Como executar o projeto
 
-### Testes
+Para iniciar o projeto, você pode utilizar o Docker Compose. Certifique-se de ter o Docker instalado em sua máquina e, em seguida, execute o seguinte comando:
 
-curl -X POST http://localhost:3000/orders \
-  -H "Content-Type: application/json" \
-  -d '{
-    "idCliente": "12345",
-    "itens": [
-      { "codigo": "A1", "quantidade": 2, "valorUnitario": 50 },
-      { "codigo": "B1", "quantidade": 1, "valorUnitario": 100 }
-    ]
-  }'
+```bash
+docker compose up
+```
 
+### Após a execução, você pode acessar a aplicação através do swagger:
+```bash
+http://localhost:8080
+```
 
-curl -X GET http://localhost:3000/orders?clientId=12345 \
-  -H "Content-Type: application/json"
+### Tecnologias utilizadas
+- Node.js
+- TypeScript
+- Serverless
+- AWS Lambda
+- AWS API Gateway
+- Filas SQS - Com conceito de Dead Letter Queue
+- MySQL
+- Docker
+- Swagger
 
-  http://localhost:3000/orders?orderId=564933c5-e832-47e8-b0c7-fdacee4eaa95
+### Observações
+- O projeto foi desenvolvido utilizando o conceito de Serverless, com a utilização de AWS Lambda e API Gateway.
+- Comecei a implementação utlizando DynamoDB, mas devido a problemas de execução com o Docker, optei por utilizar o MySQL (simulando ser um banco não relacional).
+- No diretório principal do projeto, há um arquivo chamado `csv-teste.csv` que contém dados para teste na rota que permite a importação de pedidos.
+- Optei por não utlizar testes, pois utilizei o tempo para criar o ambiente de desenvolvimento e a implementação do projeto. Porém, acredito que a cobertura de testes é essencial para garantir a qualidade do código.
+- Também optei por não utilizar arquitetura hexagonal, por ser um pouco mais demorado para implementar.
 
-curl -X PATCH http://localhost:3000/orders/{564933c5-e832-47e8-b0c7-fdacee4eaa95}/status \
-  -H "Content-Type: application/json" \
-  -d '{
-    "status": "Faturado"
-  }'
+### Melhorias futuras
+- Implementar testes unitários e de integração.
+- Implementar arquitetura hexagonal.
+- Implementar CI/CD.
 
-
-
-Para o DynamoDB Local: Abra seu navegador e acesse http://localhost:8000/shell
-Para o ElasticMQ: Abra seu navegador e acesse http://localhost:9325
-aws dynamodb list-tables --endpoint-url http://localhost:8000
-
-curl -X POST http://localhost:9324/2012-11-05/OrderQueue -d "Action=CreateQueue&QueueName=OrderQueue"
-
-### criar fila
-
+### Agradecimentos
+Agradeço a oportunidade de participar do processo seletivo da Yandeh. Foi um desafio muito interessante e que me fez pensar em diversas soluções para os problemas propostos.
+```
