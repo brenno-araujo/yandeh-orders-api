@@ -32,23 +32,6 @@ export class OrderService {
     this.databaseService = new DatabaseService();
   }
 
-  async queueOrder(data: any): Promise<any> {
-    try {
-      console.log('service', data);
-      const params = {
-        QueueUrl: process.env.IS_DOCKER ? 'http://elasticmq:9324/queue/OrderQueue' : 'http://localhost:9324/queue/OrderQueue',
-        MessageBody: JSON.stringify(data),
-      };
-      await sqs.sendMessage(params).promise();
-      return { message: 'Order queued successfully' };
-    } catch (error) {
-      console.error('Failed to queue order:', error);
-      throw new Error('Failed to queue order');
-    } finally {
-      console.log('finally');
-    }
-  }
-
   async createOrder(data: any): Promise<any> {
     try {
       console.log('service', data);

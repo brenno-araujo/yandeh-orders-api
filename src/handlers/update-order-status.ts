@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { OrderController } from '../controllers/order.controller';
+import { UpdateStatusController } from '../controllers/update-status.controller';
 import { formatJSONResponse } from '../helpers/format-json-response';
 import dotenv from 'dotenv';
 
@@ -8,8 +8,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     const orderId = event.pathParameters?.id || '';
     const body = JSON.parse(event.body || '{}');
-    const controller = new OrderController();
-    const response = await controller.updateOrderStatus(orderId, body);
+    const controller = new UpdateStatusController();
+    const response = await controller.execute(orderId, body);
     return formatJSONResponse(response.statusCode, response.body);
   } catch (error) {
     console.error('Failed to update order status:', error);
